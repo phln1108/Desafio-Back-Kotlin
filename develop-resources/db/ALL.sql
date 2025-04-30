@@ -28,7 +28,7 @@ CREATE TABLE conta (
                        id BIGSERIAL PRIMARY KEY,
                        agencia_id INT NOT NULL,
                        usuario_id INT NOT NULL,
-                       tipo_conta tipo_conta_enum NOT NULL,
+                       tipo_conta VARCHAR(255) NOT NULL,
                        saldo DECIMAL(15,2) NOT NULL DEFAULT 0.00,
                        cartao_credito BOOLEAN,
                        saldo_cartao_credito DECIMAL(15,2),
@@ -39,4 +39,3 @@ CREATE TABLE conta (
 );
 
 
-CREATE TYPE tipo_conta_enum AS ENUM ('normal', 'especial', 'premium');
