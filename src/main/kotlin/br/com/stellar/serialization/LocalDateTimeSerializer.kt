@@ -13,7 +13,7 @@ import java.time.format.DateTimeFormatter
 typealias LocalDateTimeJson = @Serializable(with = LocalDateTimeSerializer::class) LocalDateTime
 
 object LocalDateTimeSerializer : KSerializer<LocalDateTime> {
-    private val formatter = DateTimeFormatter.ISO_LOCAL_DATE
+    private val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
 
     override fun deserialize(decoder: Decoder): LocalDateTime {
         return LocalDateTime.parse(decoder.decodeString(), formatter)

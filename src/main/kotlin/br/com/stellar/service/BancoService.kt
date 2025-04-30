@@ -14,10 +14,6 @@ class BancoService {
     @Transactional
     fun criarBanco(form: BancoForm) = Banco.create(form).persist()
 
-    fun listBancos(
-        periodoInit: LocalDateTime?,
-        periodoEnd: LocalDateTime?,
-        codigoBanco: Long?
-    ): List<BancoDTO> = Banco.filter(periodoInit, periodoEnd, codigoBanco)
+    fun listBancos(): List<BancoDTO> = Banco.findAll().list().map { BancoDTO(it.nome, it.dataFundacao) }
 
 }

@@ -39,14 +39,6 @@ class Banco(
             }
         }
 
-        fun filter(
-            periodoInit: LocalDateTime?,
-            periodoEnd: LocalDateTime?,
-            codigoBanco: Long?
-        ): List<Banco> {
-            return find("(dataFundacao BETWEEN ?1 AND ?2) AND id = ?3 ", periodoInit, periodoEnd, codigoBanco).list()
-        }
-
     }
 
 }
