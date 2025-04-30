@@ -42,3 +42,4 @@ nb-configuration.xml
 
 postgres_data/
 
+.kotlin
