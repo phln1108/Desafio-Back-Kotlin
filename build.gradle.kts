@@ -16,13 +16,19 @@ val quarkusPlatformVersion: String by project
 
 dependencies {
     implementation(enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}"))
-    implementation("io.quarkus:quarkus-hibernate-orm-rest-data-panache")
+    implementation("io.quarkus:quarkus-hibernate-orm-panache-kotlin")
+    implementation("io.quarkus:quarkus-rest-client-kotlin-serialization")
     implementation("io.quarkus:quarkus-kotlin")
     implementation("io.quarkus:quarkus-rest-kotlin-serialization")
+    implementation("io.quarkus:quarkus-jackson")
     implementation("io.quarkus:quarkus-jdbc-postgresql")
+    implementation("io.quarkus:quarkus-hibernate-validator")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("io.quarkus:quarkus-arc")
     implementation("io.quarkus:quarkus-rest")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
+
+
     testImplementation("io.quarkus:quarkus-junit5")
     testImplementation("io.rest-assured:rest-assured")
 }

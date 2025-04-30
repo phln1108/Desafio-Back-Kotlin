@@ -1,0 +1,52 @@
+package br.com.stellar.entities
+
+import br.com.stellar.form.BancoForm
+import io.quarkus.hibernate.orm.panache.kotlin.PanacheCompanion
+import io.quarkus.hibernate.orm.panache.kotlin.PanacheEntityBase
+import jakarta.persistence.*
+import java.time.LocalDateTime
+
+@Entity
+@Table(name = "BANCO")
+class Banco(
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Column(
+        nullable = false, //
+        updatable = false, //
+    ) var id: Long, //
+
+    var nome: String,
+
+    @Column(name = "data_fundacao")
+    var dataFundacao: LocalDateTime
+
+): PanacheEntityBase {
+
+    constructor() : this(
+        id = 0,
+        nome = "",
+        dataFundacao = LocalDateTime.now()
+    )
+
+    companion object : PanacheCompanion<Banco> {
+
+        fun create(
+            form: BancoForm
+        ): Banco {
+            return Banco().apply {
+                this.nome = form.nome
+                this.dataFundacao = form.dataFundacao
+            }
+        }
+
+        fun filter(
+            periodoInit: LocalDateTime?,
+            periodoEnd: LocalDateTime?,
+            codigoBanco: Long?
+        ): List<Banco> {
+            return find("(dataFundacao BETWEEN ?1 AND ?2) AND id = ?3 ", periodoInit, periodoEnd, codigoBanco).list()
+        }
+
+    }
+
+}
