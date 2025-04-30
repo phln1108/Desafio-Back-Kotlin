@@ -21,14 +21,13 @@ dependencies {
     implementation("io.quarkus:quarkus-kotlin")
     implementation("io.quarkus:quarkus-rest-kotlin-serialization")
     implementation("io.quarkus:quarkus-jackson")
-    // implementation("io.quarkus:quarkus-jdbc-postgresql")
     implementation("io.quarkus:quarkus-jdbc-mysql")
     implementation("io.quarkus:quarkus-hibernate-validator")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("io.quarkus:quarkus-arc")
     implementation("io.quarkus:quarkus-rest")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
-
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 
     testImplementation("io.quarkus:quarkus-junit5")
     testImplementation("io.rest-assured:rest-assured")

@@ -10,10 +10,13 @@ import java.time.LocalDateTime
 @Table(name = "BANCO")
 class Banco(
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Column(
+    @Id 
+    @GeneratedValue(strategy = GenerationType.IDENTITY) 
+    @Column(
         nullable = false, //
         updatable = false, //
-    ) var id: Long, //
+    ) 
+    var id: Long, //
 
     var nome: String,
 
@@ -30,9 +33,7 @@ class Banco(
 
     companion object : PanacheCompanion<Banco> {
 
-        fun create(
-            form: BancoForm
-        ): Banco {
+        fun create( form: BancoForm ): Banco {
             return Banco().apply {
                 this.nome = form.nome
                 this.dataFundacao = form.dataFundacao
