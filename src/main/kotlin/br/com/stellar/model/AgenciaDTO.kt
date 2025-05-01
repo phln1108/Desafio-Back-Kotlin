@@ -1,11 +1,11 @@
 package br.com.stellar.model
 
-import br.com.stellar.serialization.LocalDateTimeJson
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class BancoDTO(
+data class AgenciaDTO (
     var id: Long,
     var nome: String,
-    var dataFundacao: LocalDateTimeJson
+    var endereco: EnderecoDTO,
+    var banco: BancoDTO,
 )

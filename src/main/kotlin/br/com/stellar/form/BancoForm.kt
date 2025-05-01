@@ -9,7 +9,11 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class BancoForm(
-    @field:NotBlank(message = "Informe o nome.") val nome: String,
-    @field:NotNull(message = "Informe a data de nascimento.") @field:PastOrPresent(message = "A data de fundação não pode ser uma data futura.") val dataFundacao: LocalDateTimeJson
+    @field:NotBlank(message = "Informe o nome.") 
+    val nome: String,
+
+    @field:NotNull(message = "Informe a data de nascimento.") 
+    @field:PastOrPresent(message = "A data de fundação não pode ser uma data futura.") 
+    val dataFundacao: LocalDateTimeJson
 )
 

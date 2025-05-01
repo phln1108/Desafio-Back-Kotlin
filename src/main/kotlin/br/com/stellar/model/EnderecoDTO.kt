@@ -1,10 +1,9 @@
-package br.com.stellar.entities
+package br.com.stellar.model
 
+import kotlinx.serialization.Serializable
 
-import jakarta.persistence.Embeddable
-
-@Embeddable
-data class Endereco(
+@Serializable
+data class EnderecoDTO (
     val logradouro: String,
     val numero: String,
     val complemento: String? = null,
