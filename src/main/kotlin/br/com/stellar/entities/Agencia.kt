@@ -24,8 +24,8 @@ class Agencia(
 
     var nome: String,
 
-    @Column(name = "data_criacao")
-    var dataCriacao: LocalDateTime
+    @Embedded
+    var endereco: Endereco,
 
 ): PanacheEntityBase {
 
@@ -33,7 +33,7 @@ class Agencia(
         id = 0,
         banco = Banco(),
         nome = "",
-        dataCriacao = LocalDateTime.now()
+        endereco = Endereco("","","","","",""),
     )
 
     companion object : PanacheCompanion<Agencia> {
@@ -43,7 +43,7 @@ class Agencia(
                 id = 0,
                 banco = banco,
                 nome = form.nome,
-                dataCriacao = LocalDateTime.now()
+                endereco = Endereco("","","","","",""),
             )
         }
 
