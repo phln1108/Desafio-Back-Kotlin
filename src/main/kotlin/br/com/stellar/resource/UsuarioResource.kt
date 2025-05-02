@@ -1,8 +1,8 @@
 package br.com.stellar.resource
 
-import br.com.stellar.form.CreateAgenciaForm
-import br.com.stellar.form.UpdateAgenciaForm
-import br.com.stellar.service.AgenciaService
+import br.com.stellar.form.CreateUsuarioForm
+import br.com.stellar.form.UpdateUsuarioForm
+import br.com.stellar.service.UsuarioService
 import jakarta.inject.Inject
 import jakarta.validation.Valid
 import jakarta.ws.rs.Consumes
@@ -15,37 +15,39 @@ import jakarta.ws.rs.PathParam
 import jakarta.ws.rs.Produces
 import jakarta.ws.rs.core.MediaType
 
-@Path("/agencia")
+
+@Path("/usuario")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-class AgenciaResource(@Inject var agenciaService: AgenciaService) {
+class UsuarioResource(@Inject var usuarioService: UsuarioService) {
 
     @POST
     @Path("/novo")
     fun create(
-        @Valid form : CreateAgenciaForm
-    ) = agenciaService.create(form)
+        @Valid form: CreateUsuarioForm
+    ) = usuarioService.create(form)
 
     @GET
     @Path("/all")
-    fun listAll() = agenciaService.listAll()
+    fun listAll() = usuarioService.listAll()
 
     @GET
     @Path("/{id}")
-    fun findById(
+    fun listById(
         @PathParam("id") id: Long
-    ) = agenciaService.listById(id)
+    ) = usuarioService.listById(id)
 
     @PUT
     @Path("/{id}")
     fun update(
         @PathParam("id") id: Long,
-        @Valid form: UpdateAgenciaForm
-    ) = agenciaService.update(id,form)
+        @Valid form: UpdateUsuarioForm
+    ) = usuarioService.update(id, form)
 
     @DELETE
     @Path("/{id}")
-    fun deleteById(
+    fun delete(
         @PathParam("id") id: Long
-    ) = agenciaService.delete(id)
+    ) = usuarioService.delete(id)
+
 }

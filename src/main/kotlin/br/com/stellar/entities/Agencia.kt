@@ -1,10 +1,11 @@
 package br.com.stellar.entities
 
 import io.quarkus.hibernate.orm.panache.kotlin.PanacheCompanion
-import br.com.stellar.form.AgenciaForm
+import br.com.stellar.form.CreateAgenciaForm
 import br.com.stellar.model.AgenciaDTO
 import io.quarkus.hibernate.orm.panache.kotlin.PanacheEntityBase
 import jakarta.persistence.*
+import java.time.LocalDateTime
 
 @Entity
 @Table(name = "AGENCIA")
@@ -15,17 +16,23 @@ class Agencia(
     @Column(
         nullable = false, 
         updatable = false, 
-    ) 
-    var id: Long, 
-    
+    ) var id: Long,
+
     @ManyToOne
-    @JoinColumn(name = "banco_id",foreignKey = ForeignKey(name = "fk_agencia_banco"))
+    @JoinColumn(name = "banco_id")
     var banco: Banco,
 
+    @Column(nullable = false)
     var nome: String,
 
     @Embedded
     var endereco: Endereco,
+
+    @Column(name = "created_at")
+    var createdAt: LocalDateTime,
+
+    @Column(name = "deleted_at")
+    var deletedAt: LocalDateTime? =  null
 
 ): PanacheEntityBase {
 
@@ -34,6 +41,8 @@ class Agencia(
         banco = Banco(),
         nome = "",
         endereco = Endereco(),
+        createdAt = LocalDateTime.now(),
+        deletedAt = null
     )
 
     fun toDTO(): AgenciaDTO = AgenciaDTO(
@@ -45,7 +54,7 @@ class Agencia(
 
     companion object : PanacheCompanion<Agencia> {
 
-        fun create(form: AgenciaForm, banco: Banco): Agencia {
+        fun create(form: CreateAgenciaForm, banco: Banco): Agencia {
             return Agencia().apply {
                 this.banco = banco
                 nome = form.nome
@@ -57,6 +66,7 @@ class Agencia(
                     form.endereco.estado,
                     form.endereco.cep,
                 )
+//                createdAt = LocalDateTime.now()
             }
         }
     }

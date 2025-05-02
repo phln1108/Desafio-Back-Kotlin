@@ -1,6 +1,5 @@
 package br.com.stellar.form
 
-import br.com.stellar.entities.Banco
 import br.com.stellar.serialization.LocalDateTimeJson
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
@@ -8,7 +7,7 @@ import jakarta.validation.constraints.PastOrPresent
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class BancoForm(
+data class CreateBancoForm(
     @field:NotBlank(message = "Informe o nome.") 
     val nome: String,
 

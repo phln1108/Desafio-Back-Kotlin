@@ -1,6 +1,6 @@
 package br.com.stellar.entities
 
-import br.com.stellar.form.BancoForm
+import br.com.stellar.form.CreateBancoForm
 import br.com.stellar.model.BancoDTO
 import io.quarkus.hibernate.orm.panache.kotlin.PanacheCompanion
 import io.quarkus.hibernate.orm.panache.kotlin.PanacheEntityBase
@@ -11,25 +11,32 @@ import java.time.LocalDateTime
 @Table(name = "BANCO")
 class Banco(
 
-    @Id 
-    @GeneratedValue(strategy = GenerationType.IDENTITY) 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(
         nullable = false,
         updatable = false,
-    ) 
-    var id: Long,
+    ) var id: Long,
 
     var nome: String,
 
     @Column(name = "data_fundacao")
-    var dataFundacao: LocalDateTime
+    var dataFundacao: LocalDateTime,
 
-): PanacheEntityBase {
+    @Column(name = "created_at")
+    var createdAt: LocalDateTime,
+
+    @Column(name = "deleted_at")
+    var deletedAt: LocalDateTime? = null
+
+) : PanacheEntityBase {
 
     constructor() : this(
         id = 0,
         nome = "",
-        dataFundacao = LocalDateTime.now()
+        dataFundacao = LocalDateTime.now(),
+        createdAt = LocalDateTime.now(),
+        deletedAt = null,
     )
 
     fun toDTO(): BancoDTO = BancoDTO(
@@ -40,7 +47,7 @@ class Banco(
 
     companion object : PanacheCompanion<Banco> {
 
-        fun create( form: BancoForm ): Banco {
+        fun create(form: CreateBancoForm): Banco {
             return Banco().apply {
                 this.nome = form.nome
                 this.dataFundacao = form.dataFundacao

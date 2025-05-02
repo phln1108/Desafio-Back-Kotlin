@@ -1,7 +1,7 @@
 package br.com.stellar.resource
 
-import br.com.stellar.form.BancoForm
-import br.com.stellar.form.BancoUpdateForm
+import br.com.stellar.form.CreateBancoForm
+import br.com.stellar.form.UpdateBancoForm
 import br.com.stellar.service.BancoService
 import jakarta.inject.Inject
 import jakarta.validation.Valid
@@ -23,7 +23,7 @@ class BancoResource(@Inject var bancoService: BancoService) {
     @POST
     @Path("/novo")
     fun create(
-        @Valid form: BancoForm
+        @Valid form: CreateBancoForm
     ) = bancoService.criarBanco(form)
 
     @GET
@@ -40,7 +40,7 @@ class BancoResource(@Inject var bancoService: BancoService) {
     @Path("/{id}")
     fun update(
         @PathParam("id") id: Long,
-        @Valid form: BancoUpdateForm
+        @Valid form: UpdateBancoForm
     ) = bancoService.updateBanco(id,form)
 
     @DELETE

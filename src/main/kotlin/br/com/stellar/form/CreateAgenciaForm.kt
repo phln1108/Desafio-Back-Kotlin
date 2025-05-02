@@ -5,7 +5,7 @@ import jakarta.validation.constraints.*
 import jakarta.validation.Valid
 
 @Serializable
-data class AgenciaForm(
+data class CreateAgenciaForm(
     @field:NotNull(message = "Informe o banco.")
     val bancoId: Long,
 
@@ -13,6 +13,6 @@ data class AgenciaForm(
     val nome: String,
 
     @field:Valid // Para validação em cascata
-    val endereco: EnderecoForm
+    val endereco: CreateEnderecoForm
 )
 

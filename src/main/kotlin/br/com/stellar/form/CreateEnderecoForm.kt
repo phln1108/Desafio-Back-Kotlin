@@ -1,13 +1,12 @@
 package br.com.stellar.form
 
 import jakarta.validation.constraints.NotBlank
-import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
 import jakarta.validation.constraints.Pattern
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class EnderecoForm(
+data class CreateEnderecoForm(
     @field:NotBlank(message = "Informe o logradouro.")
     val logradouro: String,
 
