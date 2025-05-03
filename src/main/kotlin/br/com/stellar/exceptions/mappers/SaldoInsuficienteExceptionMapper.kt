@@ -1,5 +1,6 @@
-package br.com.stellar.exceptions
+package br.com.stellar.exceptions.mappers
 
+import br.com.stellar.exceptions.SaldoInsuficienteException
 import jakarta.ws.rs.core.Response
 import jakarta.ws.rs.ext.ExceptionMapper
 import jakarta.ws.rs.ext.Provider

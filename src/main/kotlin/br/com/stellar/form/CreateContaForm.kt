@@ -1,5 +1,6 @@
 package br.com.stellar.form
 
+import jakarta.persistence.Column
 import jakarta.validation.constraints.NotNull
 import kotlinx.serialization.Serializable
 
@@ -11,5 +12,10 @@ data class CreateContaForm(
     @field:NotNull(message = "Informe o usuario.")
     val usuarioId:Long,
 
-    val tipoDeContaId: Long = 1
+    @field:NotNull(message = "Informe o tipo de conta.")
+    val tipoDeContaId: Long = 1,
+
+    val limiteCredito: Float? = null,
+
+    val limiteLis: Float? = null,
 )

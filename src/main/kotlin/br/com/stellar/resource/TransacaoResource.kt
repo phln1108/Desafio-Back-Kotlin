@@ -6,6 +6,7 @@ import br.com.stellar.form.CreateUsuarioForm
 import br.com.stellar.form.UpdateUsuarioForm
 import br.com.stellar.service.TransacaoService
 import br.com.stellar.service.UsuarioService
+import jakarta.annotation.security.RolesAllowed
 import jakarta.inject.Inject
 import jakarta.validation.Valid
 import jakarta.ws.rs.Consumes
@@ -17,28 +18,35 @@ import jakarta.ws.rs.Path
 import jakarta.ws.rs.PathParam
 import jakarta.ws.rs.Produces
 import jakarta.ws.rs.core.MediaType
-
+import jakarta.ws.rs.core.Response
+import org.eclipse.microprofile.jwt.JsonWebToken
 
 @Path("/transferencia")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-class TransacaoResource(@Inject var transacaoService: TransacaoService) {
+class TransacaoResource(
+    @Inject var transacaoService: TransacaoService,
+    @Inject var jwt: JsonWebToken,
+) {
 
     @POST
     @Path("/novo")
+    @RolesAllowed("user")
     fun create(
         @Valid form: CreateTransacaoForm
     ) = transacaoService.create(form)
 
     @GET
-    @Path("/all/{id}")
-    fun listAll(
-        @PathParam("id") id: Long
-    ) = transacaoService.listAdllFromConta(id)
-
+    @Path("/all")
+    @RolesAllowed("admin")
+    fun listAll(): Response {
+        val transacoes = transacaoService.listAll()
+        return Response.ok(transacoes).build()
+    }
 
     @DELETE
     @Path("/{id}")
+    @RolesAllowed("admin")
     fun delete(
         @PathParam("id") id: Long
     ) = transacaoService.delete(id)

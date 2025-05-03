@@ -1,11 +1,13 @@
 package br.com.stellar.service
 
+import br.com.stellar.entities.Banco
 import br.com.stellar.entities.Conta
 import br.com.stellar.entities.Transacao
 import br.com.stellar.exceptions.NotFoundException
 import br.com.stellar.exceptions.OperacaoNaoPermitidaException
 import br.com.stellar.exceptions.SaldoInsuficienteException
 import br.com.stellar.form.CreateTransacaoForm
+import br.com.stellar.model.BancoDTO
 import br.com.stellar.model.TransacaoDTO
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.transaction.Transactional
@@ -64,6 +66,8 @@ class TransacaoService {
     }
 
     fun listAdllFromConta(contaId: Long): List<TransacaoDTO> = Transacao.find("(remetente.id = ?1 or destinatario.id = ?1) and deletedAt IS NULL",contaId).list().map { it.toDTO() }
+
+    fun listAll(): List<TransacaoDTO> = Transacao.find("deletedAt IS NULL").list().map { it.toDTO() }
 
     @Transactional
     fun delete(id: Long) {

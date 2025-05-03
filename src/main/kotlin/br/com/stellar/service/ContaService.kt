@@ -1,26 +1,22 @@
 package br.com.stellar.service
 
 import br.com.stellar.entities.Agencia
-import br.com.stellar.entities.Banco
 import br.com.stellar.entities.Conta
 import br.com.stellar.entities.TipoDeConta
 import br.com.stellar.entities.Usuario
 import br.com.stellar.exceptions.NotFoundException
 import br.com.stellar.form.CreateContaForm
-import br.com.stellar.form.UpdateAgenciaForm
 import br.com.stellar.form.UpdateContaForm
-import br.com.stellar.model.AgenciaDTO
 import br.com.stellar.model.ContaDTO
 import jakarta.enterprise.context.ApplicationScoped
+import jakarta.inject.Inject
 import jakarta.transaction.Transactional
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.put
+import org.eclipse.microprofile.jwt.JsonWebToken
 import java.time.LocalDateTime
 
 
 @ApplicationScoped
-class ContaService() {
+class ContaService(@Inject var jwt: JsonWebToken) {
 
     @Transactional
     fun create(form: CreateContaForm): ContaDTO {
@@ -32,16 +28,34 @@ class ContaService() {
         if (usuario == null || usuario.deletedAt != null) throw NotFoundException("Usuário não encontrado")
         if (tipoDeConta == null) throw NotFoundException("TipoDeConta não encontrado")
 
-        val conta = Conta.create(agencia, usuario, tipoDeConta)
+        //verifica se o usuario ja possui uma conta nessa agencia
+        val contaExistente =
+            Conta.find("agencia = ?1 and usuario = ?2 and deletedAt IS NULL", agencia, usuario).firstResult()
+        if (contaExistente != null) {
+            throw IllegalArgumentException("Usuário já possui uma conta na agência: " + agencia.nome)
+        }
+
+        val conta = Conta.create(form, agencia, usuario, tipoDeConta)
         conta.persist()
 
         return conta.toDTO()
     }
 
-    fun listAll(): List<ContaDTO> = Conta.find("deletedAt IS NULL").list().map { it.toDTO() }
+    fun listAll(): List<ContaDTO> {
+        val isAdmin = jwt.groups.contains("admin")
+        val id = jwt.getClaim<Long>("id")
 
-    fun listById(id: Long): ContaDTO {
-        val conta = Conta.findById(id)
+        return if (isAdmin) {
+            Conta.find("deletedAt IS NULL").list().map { it.toDTO() }
+        } else {
+            Conta.find("deletedAt IS NULL AND usuario.id = ?1", id)
+                .list()
+                .map { it.toDTO() }
+        }
+    }
+
+    fun listByNumber(number: String): ContaDTO {
+        val conta = Conta.find("number", number).firstResult()
 
         if (conta == null || conta.deletedAt != null) throw NotFoundException("Conta não encontrado")
 

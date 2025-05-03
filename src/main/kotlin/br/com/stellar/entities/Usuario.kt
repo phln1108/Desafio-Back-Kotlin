@@ -6,6 +6,12 @@ import io.quarkus.hibernate.orm.panache.kotlin.PanacheCompanion
 import br.com.stellar.form.CreateUsuarioForm
 import br.com.stellar.model.UsuarioDTO
 import java.time.LocalDateTime
+import io.quarkus.elytron.security.common.BcryptUtil
+import io.quarkus.runtime.StartupEvent
+import jakarta.enterprise.event.Observes
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
+import jakarta.transaction.Transactional
 
 @Entity
 @Table(name = "USUARIO")
@@ -31,8 +37,6 @@ class Usuario(
 
     var isAdmin: Boolean,
 
-    var isSuperAdmin: Boolean,
-
     @Column(name = "created_at")
     var createdAt: LocalDateTime,
 
@@ -48,7 +52,6 @@ class Usuario(
         senha = "",
         endereco = Endereco(),
         isAdmin = false,
-        isSuperAdmin = false,
         createdAt = LocalDateTime.now(),
         deletedAt = null
     )
@@ -62,13 +65,12 @@ class Usuario(
 
     companion object : PanacheCompanion<Usuario> {
 
-        fun create(form: CreateUsuarioForm, senhaHash: String): Usuario {
+        fun create(form: CreateUsuarioForm): Usuario {
 
             return Usuario().apply {
                 this.nome = form.nome
                 this.email = form.email
-                this.senha = senhaHash
-                this.isAdmin = form.isAdmin
+                this.senha = BcryptUtil.bcryptHash(form.senha)
 
                 this.endereco = Endereco(
                     form.endereco.logradouro,
@@ -81,5 +83,33 @@ class Usuario(
             }
         }
     }
-
 }
+
+
+@Singleton
+class UsuarioInitializer {
+    @Transactional
+    fun onStart(@Observes event: StartupEvent) {
+        val adminEmail = "admin@admin.com"
+
+        if (Usuario.find("email", adminEmail).count() == 0L) {
+            val admin = Usuario().apply {
+                nome = "Admin"
+                email = adminEmail
+                senha = BcryptUtil.bcryptHash("admin") // senha segura
+                isAdmin = true
+                createdAt = LocalDateTime.now()
+                endereco = Endereco().apply {
+                    logradouro = "Rua das ruas"
+                    numero = "1000"
+                    cidade = "Fortaleza"
+                    estado = "CE"
+                    cep = "50135-420"
+                }
+            }
+
+            admin.persist()
+        }
+    }
+}
+

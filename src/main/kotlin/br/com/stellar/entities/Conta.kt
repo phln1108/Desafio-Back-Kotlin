@@ -2,6 +2,7 @@ package br.com.stellar.entities
 
 import br.com.stellar.form.CreateContaForm
 import br.com.stellar.model.ContaDTO
+import br.com.stellar.model.ContaSaldoDTO
 import io.quarkus.hibernate.orm.panache.kotlin.PanacheCompanion
 import io.quarkus.hibernate.orm.panache.kotlin.PanacheEntityBase
 import jakarta.persistence.Column
@@ -23,8 +24,14 @@ class Conta(
     @Column(
         nullable = false,
         updatable = false,
-    )
-    var id: Long,
+    ) var id: Long,
+
+    @Column(
+        name = "numero_cartao",
+        unique = true,
+        nullable = false,
+        updatable = false
+    ) var numeroCartao: String,
 
     @ManyToOne
     @JoinColumn(name = "agencia_id")
@@ -33,6 +40,12 @@ class Conta(
     @ManyToOne
     @JoinColumn(name = "usuario_id")
     var usuario: Usuario,
+
+    @Column(name = "limite_Credito")
+    var limiteCredito: Float = 0F,
+
+    @Column(name = "limite_Lis")
+    var limiteLis: Float = 0F,
 
     var saldo: Float = 0.0F,
 
@@ -56,6 +69,7 @@ class Conta(
 
     constructor() : this(
         id = 0,
+        numeroCartao = "",
         agencia = Agencia(),
         usuario = Usuario(),
         saldo = 0F,
@@ -63,23 +77,52 @@ class Conta(
         saldoLis = 0F,
         tipoDeConta = TipoDeConta(),
         createdAt = LocalDateTime.now(),
-        deletedAt = null
+        deletedAt = null,
+        limiteCredito = 0F,
+        limiteLis = 0F
     )
 
-    fun toDTO(): ContaDTO  = ContaDTO(
+    fun toDTO(): ContaDTO = ContaDTO(
         id = this.id,
+        numeroCartao = this.numeroCartao,
         agencia = this.agencia.toDTO(),
         usuario = this.usuario.toDTO(),
         tipoDeConta = this.tipoDeConta.toDTO(),
     )
 
+    fun toSaldoDTO(): ContaSaldoDTO = ContaSaldoDTO(
+        id = this.id,
+        numeroCartao = this.numeroCartao,
+        agencia = this.agencia.toDTO(),
+        usuario = this.usuario.toDTO(),
+        tipoDeConta = this.tipoDeConta.toDTO(),
+        saldo = this.saldo,
+        saldoCredito = this.saldoCredito,
+        saldoLis = this.saldoLis,
+        limiteCredito = this.limiteCredito,
+        limiteLis = this.limiteLis,
+    )
+
     companion object : PanacheCompanion<Conta> {
-        fun create(agencia: Agencia, usuario: Usuario, tipoDeConta: TipoDeConta): Conta {
+        fun create(form: CreateContaForm, agencia: Agencia, usuario: Usuario, tipoDeConta: TipoDeConta): Conta {
+            val numeroCartao = generateUniqueNumeroCartao()
             return Conta().apply {
                 this.agencia = agencia
                 this.usuario = usuario
                 this.tipoDeConta = tipoDeConta
+                this.numeroCartao = numeroCartao
+                this.createdAt = LocalDateTime.now()
+                this.limiteCredito = form.limiteCredito ?: 0F
+                this.limiteLis = form.limiteLis ?: 0F
             }
+        }
+
+        private fun generateUniqueNumeroCartao(): String {
+            var numero: String
+            do {
+                numero = (10000000..99999999).random().toString()
+            } while (Conta.find("numeroCartao", numero).count() > 0)
+            return numero
         }
     }
 }

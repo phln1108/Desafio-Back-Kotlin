@@ -2,6 +2,7 @@ package br.com.stellar.service
 
 import br.com.stellar.entities.Transacao
 import br.com.stellar.entities.Usuario
+import br.com.stellar.exceptions.BadRequestException
 import br.com.stellar.exceptions.NotFoundException
 import br.com.stellar.form.CreateUsuarioForm
 import br.com.stellar.form.UpdateUsuarioForm
@@ -17,12 +18,14 @@ import java.time.LocalDateTime
 class UsuarioService {
 
     fun create(form: CreateUsuarioForm): UsuarioDTO {
-        //logica de fazer a senha criptografada
-        val senhaHash = "lalal"
-        val agencia = Usuario.create(form, senhaHash)
-        agencia.persist()
+        if (Usuario.find("email", form.email).count() > 0) {
+            throw BadRequestException("Email já cadastrado")
+        }
+        
+        val usuario = Usuario.create(form)
+        usuario.persist()
 
-        return agencia.toDTO()
+        return usuario.toDTO()
     }
 
     fun listAll(): List<UsuarioDTO> = Usuario.findAll().list().map { it.toDTO() }
