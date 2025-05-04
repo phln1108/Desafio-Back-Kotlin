@@ -5,8 +5,7 @@ import br.com.stellar.exceptions.BadRequestException
 import br.com.stellar.exceptions.NotFoundException
 import br.com.stellar.form.CreateUsuarioForm
 import br.com.stellar.form.LoginForm
-import br.com.stellar.model.TokenDTO
-import br.com.stellar.service.ContaService
+import br.com.stellar.model.LoginDTO
 import br.com.stellar.service.UsuarioService
 import io.quarkus.elytron.security.common.BcryptUtil
 import io.smallrye.jwt.build.Jwt
@@ -16,7 +15,6 @@ import jakarta.transaction.Transactional
 import jakarta.ws.rs.*
 import jakarta.ws.rs.core.MediaType
 import jakarta.ws.rs.core.Response
-import org.eclipse.microprofile.jwt.JsonWebToken
 import java.time.Duration
 
 
@@ -56,6 +54,6 @@ class AuthResource(@Inject var usuarioService: UsuarioService) {
             .expiresIn(Duration.ofHours(1))
             .sign()
 
-        return Response.ok(TokenDTO(token)).build()
+        return Response.ok(LoginDTO(token,usuario.toDTO())).build()
     }
 }

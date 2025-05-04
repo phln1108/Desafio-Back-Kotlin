@@ -8,5 +8,5 @@ data class ContaDTO (
     var numeroCartao: String,
     var agencia: AgenciaDTO,
     var usuario: UsuarioDTO,
-    var tipoDeConta: TipoDeContaDTO
+    var tipoDeConta: String
 )

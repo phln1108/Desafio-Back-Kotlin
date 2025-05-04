@@ -5,5 +5,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class UpdateContaForm(
 
-    val tipoDeContaId: Long? = null
+    val tipoDeConta: String? = null
 )

@@ -7,5 +7,6 @@ data class UsuarioDTO (
     val id: Long,
     val nome: String,
     val email: String,
+    val isAdmin: Boolean,
     val endereco: EnderecoDTO
 )

@@ -6,7 +6,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class TransacaoDTO(
     var id: Long,
-    var remetente: ContaDTO,
+    var tipoTransacao: String,
+    var remetente: ContaDTO?,
     var destinatario: ContaDTO,
     var valor: Float,
     var usouCredito: Boolean,

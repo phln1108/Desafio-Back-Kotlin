@@ -13,7 +13,7 @@ data class CreateContaForm(
     val usuarioId:Long,
 
     @field:NotNull(message = "Informe o tipo de conta.")
-    val tipoDeContaId: Long = 1,
+    val tipoDeConta: String,
 
     val limiteCredito: Float? = null,
 

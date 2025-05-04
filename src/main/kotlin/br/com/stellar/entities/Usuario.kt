@@ -60,6 +60,7 @@ class Usuario(
         id = this.id,
         nome = this.nome,
         email = this.email,
+        isAdmin = this.isAdmin,
         endereco = endereco.toDTO()
     )
 

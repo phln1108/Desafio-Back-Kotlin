@@ -7,6 +7,8 @@ import io.quarkus.hibernate.orm.panache.kotlin.PanacheCompanion
 import io.quarkus.hibernate.orm.panache.kotlin.PanacheEntityBase
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
@@ -15,6 +17,22 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import java.time.LocalDateTime
 
+enum class TipoConta {
+    PADRAO,
+    ESPECIAL,
+    PREMIUM;
+
+    companion object {
+        fun fromString(value: String): TipoConta {
+            return when (value.uppercase()) {
+                "PADRAO" -> PADRAO
+                "ESPECIAL" -> ESPECIAL
+                "PREMIUM" -> PREMIUM
+                else -> throw IllegalArgumentException("Tipo de conta inválido: $value")
+            }
+        }
+    }
+}
 
 @Entity
 @Table(name = "CONTA")
@@ -55,9 +73,9 @@ class Conta(
     @Column(name = "saldo_lis")
     var saldoLis: Float = 0F,
 
-    @ManyToOne
-    @JoinColumn(name = "tipo_de_conta_id")
-    var tipoDeConta: TipoDeConta,
+    @Enumerated(EnumType.STRING)  // Armazena o enum como string no BD
+    @Column(name = "tipo_conta", nullable = false)
+    var tipoDeConta: TipoConta,
 
     @Column(name = "created_at")
     var createdAt: LocalDateTime,
@@ -75,7 +93,7 @@ class Conta(
         saldo = 0F,
         saldoCredito = 0F,
         saldoLis = 0F,
-        tipoDeConta = TipoDeConta(),
+        tipoDeConta = TipoConta.PADRAO,
         createdAt = LocalDateTime.now(),
         deletedAt = null,
         limiteCredito = 0F,
@@ -87,7 +105,7 @@ class Conta(
         numeroCartao = this.numeroCartao,
         agencia = this.agencia.toDTO(),
         usuario = this.usuario.toDTO(),
-        tipoDeConta = this.tipoDeConta.toDTO(),
+        tipoDeConta = this.tipoDeConta.name,
     )
 
     fun toSaldoDTO(): ContaSaldoDTO = ContaSaldoDTO(
@@ -95,7 +113,7 @@ class Conta(
         numeroCartao = this.numeroCartao,
         agencia = this.agencia.toDTO(),
         usuario = this.usuario.toDTO(),
-        tipoDeConta = this.tipoDeConta.toDTO(),
+        tipoDeConta = this.tipoDeConta.name,
         saldo = this.saldo,
         saldoCredito = this.saldoCredito,
         saldoLis = this.saldoLis,
@@ -104,7 +122,7 @@ class Conta(
     )
 
     companion object : PanacheCompanion<Conta> {
-        fun create(form: CreateContaForm, agencia: Agencia, usuario: Usuario, tipoDeConta: TipoDeConta): Conta {
+        fun create(form: CreateContaForm, agencia: Agencia, usuario: Usuario, tipoDeConta: TipoConta): Conta {
             val numeroCartao = generateUniqueNumeroCartao()
             return Conta().apply {
                 this.agencia = agencia
@@ -121,7 +139,7 @@ class Conta(
             var numero: String
             do {
                 numero = (10000000..99999999).random().toString()
-            } while (Conta.find("numeroCartao", numero).count() > 0)
+            } while (find("numeroCartao", numero).count() > 0)
             return numero
         }
     }

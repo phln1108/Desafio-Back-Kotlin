@@ -26,7 +26,6 @@ import org.eclipse.microprofile.jwt.JsonWebToken
 @Consumes(MediaType.APPLICATION_JSON)
 class TransacaoResource(
     @Inject var transacaoService: TransacaoService,
-    @Inject var jwt: JsonWebToken,
 ) {
 
     @POST
@@ -34,7 +33,7 @@ class TransacaoResource(
     @RolesAllowed("user")
     fun create(
         @Valid form: CreateTransacaoForm
-    ) = transacaoService.create(form)
+    ) = transacaoService.transferir(form)
 
     @GET
     @Path("/all")

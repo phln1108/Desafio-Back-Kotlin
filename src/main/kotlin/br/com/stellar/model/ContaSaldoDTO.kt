@@ -8,7 +8,7 @@ data class ContaSaldoDTO(
     var numeroCartao: String,
     var agencia: AgenciaDTO,
     var usuario: UsuarioDTO,
-    val tipoDeConta: TipoDeContaDTO,
+    val tipoDeConta: String,
 
     val saldo: Float,
     val saldoCredito: Float? = null,  // Opcional (conta especial/premium)

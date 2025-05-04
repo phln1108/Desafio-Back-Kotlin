@@ -16,6 +16,23 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import java.time.LocalDateTime
 
+enum class TipoTransacao {
+    SAQUE,
+    DEPOSITO,
+    TRANSFERENCIA;
+
+    companion object {
+        fun fromString(value: String): TipoTransacao {
+            return when (value.uppercase()) {
+                "SAQUE" -> SAQUE
+                "DEPOSITO" -> DEPOSITO
+                "TRANSFERENCIA" -> TRANSFERENCIA
+                else -> throw IllegalArgumentException("Tipo de conta inválido: $value")
+            }
+        }
+    }
+}
+
 @Entity()
 @Table(name = "TRANSACAO")
 class Transacao(
@@ -27,12 +44,16 @@ class Transacao(
         updatable = false,
     ) var id: Long,
 
+    @Enumerated(EnumType.STRING)  // Armazena o enum como string no BD
+    @Column(name = "tipo_transacao", nullable = false)
+    var tipoTransacao: TipoTransacao,
+
+    // não precisa caso for saque ou deposito
     @ManyToOne
     @JoinColumn(
         name = "remetente_conta_id",
-        nullable = false,
         updatable = false,
-    ) var remetente: Conta,
+    ) var remetente: Conta? = null,
 
     @ManyToOne
     @JoinColumn(
@@ -74,26 +95,29 @@ class Transacao(
 
     constructor() : this(
         id = 0,
-        remetente = Conta(),
+        tipoTransacao = TipoTransacao.SAQUE,
+        remetente = null,
         destinatario = Conta(),
         valor = 0F,
         dataTransacao = LocalDateTime.now(),
         createdAt = LocalDateTime.now(),
-        deletedAt = null
+        deletedAt = null,
     )
 
     fun toDTO(): TransacaoDTO = TransacaoDTO(
         id = this.id,
-        remetente = this.remetente.toDTO(),
+        tipoTransacao = this.tipoTransacao.name,
+        remetente = this.remetente?.toDTO(),
         destinatario = this.destinatario.toDTO(),
         valor = this.valor,
         usouCredito = false,
-        dataTransacao = this.dataTransacao
+        dataTransacao = this.dataTransacao,
     )
 
     companion object : PanacheCompanion<Transacao> {
-        fun create(form: CreateTransacaoForm, remetente: Conta, destinatario: Conta): Transacao {
+        fun create(form: CreateTransacaoForm, remetente: Conta?, destinatario: Conta, tipoTransacao: TipoTransacao): Transacao {
             return Transacao().apply {
+                this.tipoTransacao = tipoTransacao
                 this.remetente = remetente
                 this.destinatario = destinatario
                 this.valor = form.valor

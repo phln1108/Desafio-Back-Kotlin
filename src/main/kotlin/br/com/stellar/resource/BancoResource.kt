@@ -26,12 +26,12 @@ class BancoResource(@Inject var bancoService: BancoService) {
     @RolesAllowed("admin")
     fun create(
         @Valid form: CreateBancoForm
-    ) = bancoService.criarBanco(form)
+    ) = bancoService.create(form)
 
     @GET
     @Path("/all")
     @RolesAllowed("admin")
-    fun findAll() = bancoService.listBancos();
+    fun findAll() = bancoService.listall();
 
     @GET
     @Path("/{id}")
@@ -46,7 +46,7 @@ class BancoResource(@Inject var bancoService: BancoService) {
     fun update(
         @PathParam("id") id: Long,
         @Valid form: UpdateBancoForm
-    ) = bancoService.updateBanco(id,form)
+    ) = bancoService.update(id,form)
 
     @DELETE
     @Path("/{id}")

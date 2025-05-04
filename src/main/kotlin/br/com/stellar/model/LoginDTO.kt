@@ -3,7 +3,7 @@ package br.com.stellar.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class TipoDeContaDTO(
-    var id: Long,
-    var nome: String
+data class LoginDTO(
+    val token: String,
+    val usuario: UsuarioDTO
 )

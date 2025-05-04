@@ -32,20 +32,18 @@ class ContaResource(@Inject var contaService: ContaService) {
     ) = contaService.create(form)
 
     @GET
-    @Path("/{number}")
-    @RolesAllowed("user")
-    fun listByIdNumber(
-        @PathParam("number") number: String
-    ): Response {
-        return Response.ok(contaService.listByNumber(number)).build()
-    }
-
-    @GET
     @Path("/all")
-    @RolesAllowed("user")
+    @RolesAllowed("admin")
     fun listAll(): Response {
         return Response.ok(contaService.listAll()).build()
     }
+
+    @GET
+    @Path("/{id}")
+    @RolesAllowed("admin")
+    fun findById(
+        @PathParam("id") id: Long
+    ) = contaService.listById(id)
 
     @PUT
     @Path("/{id}")
@@ -62,4 +60,14 @@ class ContaResource(@Inject var contaService: ContaService) {
     fun delete(
         @PathParam("id") id: Long
     ) = contaService.delete(id)
+
+
+    @GET
+    @Path("/{number}")
+    @RolesAllowed("user")
+    fun listByIdNumber(
+        @PathParam("number") number: String
+    ): Response {
+        return Response.ok(contaService.listByNumber(number)).build()
+    }
 }

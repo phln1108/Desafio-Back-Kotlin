@@ -7,23 +7,20 @@ import br.com.stellar.form.UpdateBancoForm
 import br.com.stellar.model.BancoDTO
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.transaction.Transactional
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.put
 import java.time.LocalDateTime
 
 @ApplicationScoped
 class BancoService {
 
     @Transactional
-    fun criarBanco(form: CreateBancoForm): BancoDTO {
+    fun create(form: CreateBancoForm): BancoDTO {
         val banco = Banco.create(form)
         banco.persist()
 
         return banco.toDTO()
     }
 
-    fun listBancos(): List<BancoDTO> = Banco.find("deletedAt IS NULL").list().map { it.toDTO() }
+    fun listall(): List<BancoDTO> = Banco.find("deletedAt IS NULL").list().map { it.toDTO() }
 
     fun listById(id: Long): BancoDTO {
         val banco = Banco.findById(id)
@@ -34,7 +31,7 @@ class BancoService {
     }
 
     @Transactional
-    fun updateBanco(id: Long, form: UpdateBancoForm): BancoDTO {
+    fun update(id: Long, form: UpdateBancoForm): BancoDTO {
         val banco = Banco.findById(id)
 
         if (banco == null || banco.deletedAt != null) throw NotFoundException("Banco não encontrado")
@@ -53,16 +50,12 @@ class BancoService {
     }
 
     @Transactional
-    fun delete(id: Long): JsonObject {
+    fun delete(id: Long) {
         val banco = Banco.findById(id)
 
         if (banco == null || banco.deletedAt != null) throw NotFoundException("Banco não encontrado")
 
         banco.deletedAt = LocalDateTime.now()
         banco.persist()
-
-        return buildJsonObject {
-            put("message", "Banco deletado com sucesso.")
-        }
     }
 }
