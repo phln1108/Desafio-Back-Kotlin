@@ -6,10 +6,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class CreateTransacaoForm(
-    var remetenteId: Long? = null,
+    var remetenteNumero: String? = null,
 
     @field:NotNull(message = "Informe a Conta destinatario")
-    var destinatarioId: Long,
+    var destinatarioNumero: String,
 
     @field:NotNull(message = "Informe uma quantia")
     var valor: Float,

@@ -39,6 +39,13 @@ class ContaResource(@Inject var contaService: ContaService) {
     }
 
     @GET
+    @Path("/minhas")
+    @RolesAllowed("user")
+    fun listAllbyUsuarioId(): Response {
+        return Response.ok(contaService.listAllByUsuarioId()).build()
+    }
+
+    @GET
     @Path("/{id}")
     @RolesAllowed("admin")
     fun findById(

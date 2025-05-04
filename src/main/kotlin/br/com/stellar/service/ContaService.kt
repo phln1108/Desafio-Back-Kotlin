@@ -8,8 +8,12 @@ import br.com.stellar.exceptions.NotFoundException
 import br.com.stellar.form.CreateContaForm
 import br.com.stellar.form.UpdateContaForm
 import br.com.stellar.model.ContaDTO
+import br.com.stellar.model.ContaListDTO
+import br.com.stellar.model.ContaSaldoDTO
+import br.com.stellar.model.ContaSaldoListDTO
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.inject.Inject
+import jakarta.json.JsonNumber
 import jakarta.transaction.Transactional
 import org.eclipse.microprofile.jwt.JsonWebToken
 import java.time.LocalDateTime
@@ -40,13 +44,15 @@ class ContaService(@Inject var jwt: JsonWebToken) {
         return conta.toDTO()
     }
 
-    fun listAll(): List<ContaDTO> = Conta.find("deletedAt IS NULL").list().map { it.toDTO() }
+    fun listAll(): ContaListDTO = ContaListDTO(Conta.find("deletedAt IS NULL").list().map { it.toDTO() })
 
-    fun listAllByUsuarioId(): List<ContaDTO> {
-        val id = jwt.getClaim<Long>("id")
+    fun listAllByUsuarioId(): ContaSaldoListDTO {
+        val id = jwt.getClaim<JsonNumber>("id").longValue()
+        val contas = Conta.find("deletedAt IS NULL AND usuario.id = ?1", id)
+            .list()
+            .map { it.toSaldoDTO() }
 
-        return Conta.find("deletedAt IS NULL AND usuario.id = ?1", id).list().map { it.toDTO() }
-
+        return ContaSaldoListDTO(contas)
     }
 
     fun listById(id: Long): ContaDTO {
@@ -72,7 +78,7 @@ class ContaService(@Inject var jwt: JsonWebToken) {
         if (conta == null || conta.deletedAt != null) throw NotFoundException("Conta não encontrado")
 
         form.tipoDeConta?.let {
-            val tipoDeConta = TipoConta.fromString(form.tipoDeConta)
+            val tipoDeConta = TipoConta.fromString(form.tipoDeConta!!)
             conta.tipoDeConta = tipoDeConta
         }
 

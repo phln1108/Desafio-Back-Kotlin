@@ -21,7 +21,7 @@ import jakarta.ws.rs.core.MediaType
 import jakarta.ws.rs.core.Response
 import org.eclipse.microprofile.jwt.JsonWebToken
 
-@Path("/transferencia")
+@Path("/transacao")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 class TransacaoResource(
@@ -29,11 +29,25 @@ class TransacaoResource(
 ) {
 
     @POST
-    @Path("/novo")
+    @Path("/transferencia")
     @RolesAllowed("user")
-    fun create(
+    fun transferir(
         @Valid form: CreateTransacaoForm
     ) = transacaoService.transferir(form)
+
+    @POST
+    @Path("/saque")
+    @RolesAllowed("user")
+    fun saquar(
+        @Valid form: CreateTransacaoForm
+    ) = transacaoService.saquar(form)
+
+    @POST
+    @Path("/deposito")
+    @RolesAllowed("user")
+    fun depositar(
+        @Valid form: CreateTransacaoForm
+    ) = transacaoService.depositar(form)
 
     @GET
     @Path("/all")
