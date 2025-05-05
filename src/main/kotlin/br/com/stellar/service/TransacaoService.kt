@@ -38,14 +38,14 @@ class TransacaoService(@Inject var jwt: JsonWebToken) {
             if (remetente.tipoDeConta == TipoConta.PADRAO)
                 throw OperacaoNaoPermitidaException("Apenas contas Especial e Premium realiza pagamento em crédito.")
 
-            if (form.valor < remetente.saldoCredito)
+            if (form.valor > remetente.saldoCredito)
                 throw SaldoInsuficienteException("Saldo de Crédito insuficiente.")
 
             remetente.saldoCredito -= form.valor
             destinatario.saldo += form.valor
 
         } else {
-            if (form.valor < remetente.saldo) {
+            if (form.valor > remetente.saldo) {
                 if (remetente.tipoDeConta != TipoConta.PREMIUM)
                     throw SaldoInsuficienteException("Saldo insuficiente.")
 
@@ -99,7 +99,7 @@ class TransacaoService(@Inject var jwt: JsonWebToken) {
         if (form.usouCredito)
             throw OperacaoNaoPermitidaException("Saque só pode ser realizado com saldo da conta")
 
-        if (form.valor < destinatario.saldo) throw SaldoInsuficienteException("Saldo insuficiente.")
+        if (form.valor > destinatario.saldo) throw SaldoInsuficienteException("Saldo insuficiente.")
 
         destinatario.saldo -= form.valor
 
