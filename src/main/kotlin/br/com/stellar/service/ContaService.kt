@@ -44,7 +44,7 @@ class ContaService(@Inject var jwt: JsonWebToken) {
         return conta.toDTO()
     }
 
-    fun listAll(): ContaListDTO = ContaListDTO(Conta.find("deletedAt IS NULL").list().map { it.toDTO() })
+    fun listAll(): ContaSaldoListDTO = ContaSaldoListDTO(Conta.find("deletedAt IS NULL").list().map { it.toSaldoDTO() })
 
     fun listAllByUsuarioId(): ContaSaldoListDTO {
         val id = jwt.getClaim<JsonNumber>("id").longValue()
