@@ -5,6 +5,7 @@ import br.com.stellar.form.UpdateUsuarioForm
 import br.com.stellar.service.UsuarioService
 import jakarta.annotation.security.RolesAllowed
 import jakarta.inject.Inject
+import jakarta.json.JsonNumber
 import jakarta.validation.Valid
 import jakarta.ws.rs.Consumes
 import jakarta.ws.rs.DELETE
@@ -28,7 +29,8 @@ class UsuarioResource(
 
     @GET
     @RolesAllowed("user")
-    fun listSelf() = usuarioService.listById(jwt.getClaim<Long>("id"))
+    fun listSelf() = usuarioService.listById(jwt.getClaim<JsonNumber>("id").longValue()
+    )
 
     @GET
     @Path("/all")
